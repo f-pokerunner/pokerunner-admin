@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 interface InputBoxProps {
     onCoordinatesChange: (posx: string, posy: string) => void;
+    onQueryChange: (query: string) => void;
 }
 
 interface Adm {
@@ -34,7 +35,7 @@ interface ApiResponse {
     };
 }
 
-const InputBox: React.FC<InputBoxProps> = ({ onCoordinatesChange }) => {
+const InputBox: React.FC<InputBoxProps> = ({ onCoordinatesChange, onQueryChange }) => {
     const [query, setQuery] = useState<string>('');
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -50,6 +51,7 @@ const InputBox: React.FC<InputBoxProps> = ({ onCoordinatesChange }) => {
             if (data.address && data.address.adm && data.address.adm.length > 0) {
                 const { posx, posy } = data.address.adm[0];
                 onCoordinatesChange(posx, posy);
+                onQueryChange(query);
             } else {
                 console.error('No coordinates found');
             }

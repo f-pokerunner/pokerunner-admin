@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 
 declare global {
     interface Window {
@@ -9,9 +9,10 @@ declare global {
 interface INaviMapProps {
     posx: string;
     posy: string;
+    imageUrl: string | null;
 }
 
-const INaviMap: React.FC<INaviMapProps> = ({posx, posy}) => {
+const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl }) => {
     const mapRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -28,12 +29,10 @@ const INaviMap: React.FC<INaviMapProps> = ({posx, posy}) => {
                     zoom: 13
                 });
 
-                const markerImageURL = '/marker.png';
-
                 new (window as any).inavi.maps.Marker({
                     position: [parseFloat(posx), parseFloat(posy)],
                     map: map,
-                    icon: markerImageURL,
+                    icon: imageUrl ? imageUrl : '/marker.png',
                 });
             }
         };
@@ -41,11 +40,11 @@ const INaviMap: React.FC<INaviMapProps> = ({posx, posy}) => {
         return () => {
             document.body.removeChild(script);
         };
-    }, [posx, posy]);
+    }, [posx, posy, imageUrl]);
 
     return (
         <div>
-            <div ref={mapRef} style={{width: '100%', height: '500px'}}></div>
+            <div ref={mapRef} style={{ width: '100%', height: '500px' }}></div>
         </div>
     );
 };
