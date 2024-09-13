@@ -8,7 +8,7 @@ function App() {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:8080/location');
+        const socket = new WebSocket('ws://133.186.215.243:8080/location');
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
