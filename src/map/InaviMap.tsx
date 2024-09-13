@@ -10,10 +10,13 @@ interface INaviMapProps {
     posx: string;
     posy: string;
     imageUrl: string | null;
+    isWebSocketData: boolean;
 }
 
-const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl }) => {
+const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl, isWebSocketData }) => {
     const mapRef = useRef<HTMLDivElement>(null);
+    const mapInstanceRef = useRef<any>(null);
+    const markerRef = useRef<any>(null);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -22,17 +25,17 @@ const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl }) => {
         document.body.appendChild(script);
 
         window.initMap = () => {
-            if (mapRef.current) {
-                const map = new (window as any).inavi.maps.Map({
+            if (mapRef.current && !mapInstanceRef.current) {
+                mapInstanceRef.current = new (window as any).inavi.maps.Map({
                     center: [parseFloat(posx), parseFloat(posy)],
                     container: mapRef.current,
                     zoom: 13
                 });
 
-                new (window as any).inavi.maps.Marker({
+                markerRef.current = new (window as any).inavi.maps.Marker({
                     position: [parseFloat(posx), parseFloat(posy)],
-                    map: map,
-                    icon: imageUrl ? imageUrl : '/marker.png',
+                    map: mapInstanceRef.current,
+                    icon: '/marker.png',  // 초기 마커 아이콘
                 });
             }
         };
@@ -40,7 +43,26 @@ const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl }) => {
         return () => {
             document.body.removeChild(script);
         };
-    }, [posx, posy, imageUrl]);
+    }, []);
+
+    useEffect(() => {
+        if (mapInstanceRef.current) {
+            mapInstanceRef.current.setCenter([parseFloat(posx), parseFloat(posy)]);
+            if (markerRef.current) {
+                markerRef.current.setPosition([parseFloat(posx), parseFloat(posy)]);
+
+                if (isWebSocketData) {
+                    // 웹 소켓 데이터로 업데이트 되는 경우 초기 마커로 설정
+                    markerRef.current.setIcon('/marker.png');
+                } else if (imageUrl) {
+                    // 사용자가 설정한 이미지로 마커 변경
+                    markerRef.current.setIcon(imageUrl);
+                } else {
+                    markerRef.current.setIcon('/marker.png'); // 이미지를 제공하지 않으면 초기 마커
+                }
+            }
+        }
+    }, [posx, posy, imageUrl, isWebSocketData]);
 
     return (
         <div>
