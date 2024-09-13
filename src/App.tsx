@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
+
 import './App.css';
+import InaviMap from "./map/InaviMap";
+import InputBox from "./map/InputBox";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [coordinates, setCoordinates] = useState<{ posx: string; posy: string } | null>(null);
+
+    const handleCoordinatesChange = (posx: string, posy: string) => {
+        setCoordinates({posx, posy});
+    };
+
+    return (
+        <div className="App">
+            <h1>포켓몬 위치 놓기</h1>
+            {coordinates ? (
+                <InaviMap posx={coordinates.posx} posy={coordinates.posy}/>
+            ) : (
+                <p>좌표를 입력하세요.</p>
+            )}
+            <InputBox onCoordinatesChange={handleCoordinatesChange}/>
+        </div>
+    );
 }
 
 export default App;
