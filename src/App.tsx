@@ -34,7 +34,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>포켓몬 위치 놓기</h1>
+            <h1>포켓몬 위치 놓기 & 달리기 시뮬레이션</h1>
             {coordinates ? (
                 <InaviMap
                     posx={coordinates.lng}
