@@ -35,7 +35,7 @@ const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl, isWebSocketDa
                 markerRef.current = new (window as any).inavi.maps.Marker({
                     position: [parseFloat(posx), parseFloat(posy)],
                     map: mapInstanceRef.current,
-                    icon: '/marker.png',  // 초기 마커 아이콘
+                    icon: imageUrl ? imageUrl : '/marker.png',  // 초기 마커 아이콘
                 });
             }
         };
@@ -54,11 +54,12 @@ const INaviMap: React.FC<INaviMapProps> = ({ posx, posy, imageUrl, isWebSocketDa
                 if (isWebSocketData) {
                     // 웹 소켓 데이터로 업데이트 되는 경우 초기 마커로 설정
                     markerRef.current.setIcon('/marker.png');
-                } else if (imageUrl) {
+                } else if (imageUrl && !isWebSocketData) {
                     // 사용자가 설정한 이미지로 마커 변경
                     markerRef.current.setIcon(imageUrl);
                 } else {
-                    markerRef.current.setIcon('/marker.png'); // 이미지를 제공하지 않으면 초기 마커
+                    // 이 외의 경우도 초기 마커를 설정하는 안전 장치
+                    markerRef.current.setIcon('/marker.png');
                 }
             }
         }

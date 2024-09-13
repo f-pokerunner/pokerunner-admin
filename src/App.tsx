@@ -19,6 +19,7 @@ function App() {
                 lng: data.lng.toString(),
                 isWebSocketData: true
             });
+            setImageUrl(null);  // 웹 소켓 데이터를 받을 때는 기본 마커로 설정
         };
 
         return () => {
